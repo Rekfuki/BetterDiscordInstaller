@@ -65,6 +65,18 @@ BetterDiscordInstaller::~BetterDiscordInstaller()
     delete ui;
 }
 
+void BetterDiscordInstaller::installInfo(QString str) {
+    ui->feed->insertPlainText("\n" + str);
+}
+
+void BetterDiscordInstaller::licenseClicked() {
+    ui->stackedWidget->setCurrentIndex(1);
+}
+
+void BetterDiscordInstaller::backClicked(){
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
 void BetterDiscordInstaller::browseFiles() {
     QString path = QString::fromStdString(getHomeDir() +  installPaths[os].path);
     QString dir = QFileDialog::getExistingDirectory(this,tr("Open Directory"),
@@ -100,6 +112,7 @@ void BetterDiscordInstaller::pathNotEmpty(QString str) {
 }
 
 void BetterDiscordInstaller::installClicked(){
+    ui->install->setDisabled(true);
     install(ui->pathEdit->text().toUtf8().constData());
 }
 
@@ -111,7 +124,6 @@ std::string BetterDiscordInstaller::findLatestVer(std::string str) {
     while (it.hasNext()){
         std::string path = it.filePath().toUtf8().constData();
         if (std::regex_match (path, std::regex(".*([^\\/]|[0-9.])+\\d$") )){
-//            std::cout << path << std::endl;
             fullPath = path;
             paths.push_back(fullPath);
         }
@@ -140,7 +152,10 @@ void BetterDiscordInstaller::install(std::string path) {
 
     injectBD(path);
 
-    ui->feed->insertPlainText("\nDone");
+    disconnect(this, SIGNAL(sendInstallInfo(QString)), 0, 0);
+
+    ui->feed->insertPlainText("\nDone\n\n");
+    ui->install->setDisabled(false);
 }
 
 void BetterDiscordInstaller::extract(std::string path) {
@@ -313,15 +328,5 @@ void BetterDiscordInstaller::injectBD(std::string path) {
     iFile.close();
 }
 
-void BetterDiscordInstaller::installInfo(QString str) {
-    ui->feed->insertPlainText("\n" + str);
-}
 
-void BetterDiscordInstaller::licenseClicked() {
-    ui->stackedWidget->setCurrentIndex(1);
-}
-
-void BetterDiscordInstaller::backClicked(){
-    ui->stackedWidget->setCurrentIndex(0);
-}
 

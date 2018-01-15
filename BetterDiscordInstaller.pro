@@ -6,6 +6,9 @@
 
 QT       += core gui network concurrent
 
+
+macx:ICON += $${_PRO_FILE_PWD_}/resources/icon.icns
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = BetterDiscordInstaller
