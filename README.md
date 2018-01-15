@@ -5,7 +5,7 @@ BetterDiscord installer for OSX and Linux developed using C/C++ and QT5.10.0
 
 [BetterDiscord Repository](https://github.com/Jiiks/BetterDiscordApp/tree/v2)
 
-[Zere's BetterDiscord fork](https://github.com/rauenzi/BetterDiscordApp) is being used to download updated version of BetterDiscord
+[Zere's BetterDiscord fork](https://github.com/rauenzi/BetterDiscordApp) is used to download updated version of BetterDiscord
 
 
 
