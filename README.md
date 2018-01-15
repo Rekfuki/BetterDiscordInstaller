@@ -13,7 +13,7 @@ BetterDiscord installer for OSX and Linux developed using C/C++ and QT5.10.0
 
 ![alt text](https://i.imgur.com/wLTAbgX.png)
 
-##Installation
+# Installation
 * Download the latest release from [releases](https://github.com/Rekfuki/BetterDiscordInstaller/releases)
 * Run the installer
 * Either select one of the distributions to automatically detect install path or select it manually by clicking browse (directory has to contain *.asar archive)
