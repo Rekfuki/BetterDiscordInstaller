@@ -19,7 +19,7 @@ BetterDiscordInstaller::InstallPaths BetterDiscordInstaller::installPaths = []
                   {"Library/Application Support/"}
              }},
               {"linux", {
-                  {"/.config/"}
+                  {".config/"}
               }}};
 
     return paths;
@@ -82,7 +82,7 @@ void BetterDiscordInstaller::browseFiles() {
     QString dir = QFileDialog::getExistingDirectory(this,tr("Open Directory"),
                                                     path,
                                                     QFileDialog::ShowDirsOnly);
-    ui->pathEdit->setText(dir);
+    ui->pathEdit->setText(dir + "/");
 }
 
 void BetterDiscordInstaller::distChecked() {
@@ -135,12 +135,14 @@ std::string BetterDiscordInstaller::findLatestVer(std::string str) {
 void BetterDiscordInstaller::install(std::string path) {
     ui->feed->insertPlainText("Starting installation");
 
-    connect(this, SIGNAL(sendInstallInfo(QString)), this, SLOT(installInfo(QString)));
-    QFuture<void> future = QtConcurrent::run(this, &BetterDiscordInstaller::extract, path);
+//    std::cout << "starting installation" << std::endl;
+//    connect(this, SIGNAL(sendInstallInfo(QString)), this, SLOT(installInfo(QString)));
+//    QFuture<void> future = QtConcurrent::run(this, &BetterDiscordInstaller::extract, path);
 
-    while(!future.isFinished()) {
-        qApp->processEvents();
-    }
+//    while(!future.isFinished()) {
+//        qApp->processEvents();
+//    }
+    extract(path);
 
     QString bdPath = QString::fromStdString(path+"node_modules/");
 
@@ -152,26 +154,30 @@ void BetterDiscordInstaller::install(std::string path) {
 
     injectBD(path);
 
-    disconnect(this, SIGNAL(sendInstallInfo(QString)), 0, 0);
+//    disconnect(this, SIGNAL(sendInstallInfo(QString)), 0, 0);
 
     ui->feed->insertPlainText("\nDone\n\n");
     ui->install->setDisabled(false);
 }
 
 void BetterDiscordInstaller::extract(std::string path) {
-    emit sendInstallInfo("Extracting core.asar");
+//    emit sendInstallInfo("Extracting core.asar");
+    ui->feed->insertPlainText("\nExtracting core.asar");
+    std::cout << path << std::endl;
     std::string header = getHeader(path);
     auto j = nlohmann::json::parse(header);
     parseRoot(j, path);
     archive.close();
     baseOffset = 0;
-    emit sendInstallInfo("Done extracting");
+//    emit sendInstallInfo("Done extracting");
+    ui->feed->insertPlainText("\nDone extracting");
 }
 
 std::string BetterDiscordInstaller::getHeader(std::string path) {
     archive.open(path + "core.asar", std::ios::in);
     if (!archive) {
-        emit sendInstallInfo("Failed to open archive");
+//        emit sendInstallInfo("Failed to open archive");
+        ui->feed->insertPlainText("\nFialed to open archive " + QString::fromStdString(path) + "core.asar");
         return NULL;
     }
 
@@ -189,6 +195,7 @@ std::string BetterDiscordInstaller::getHeader(std::string path) {
 }
 
 void BetterDiscordInstaller::parseRoot(nlohmann::json data, std::string path) {
+    qApp->processEvents();
     for (nlohmann::json::iterator it = data.begin(); it != data.end(); it++) {
         if(it.key() == "files" || it.key() == "bin"){
             parseRoot(it.value(), path);
